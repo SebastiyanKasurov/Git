@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: git
+  datasource:
+    url: jdbc:mysql://localhost:3306/git_test
+    name:
+    hikari:
+      username: root
+      password: root
+      jdbc-url:  jdbc:mysql://localhost:3306/git_test
+  main:
+    allow-bean-definition-overriding: true
