@@ -4,6 +4,8 @@ import com.kpk.git.model.Commit;
 import com.kpk.git.model.Result;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BranchService {
 	
@@ -21,6 +23,14 @@ public class BranchService {
 	
 	public Result log() {
 		
+		return null;
+	}
+	
+	public List<String> getStagedFiles() {
+		return null;
+	}
+	
+	public List<String> getCommitedFiles() {
 		return null;
 	}
 	
