@@ -34,7 +34,7 @@ ADD CONSTRAINT `current_branch_fk`
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
 
-ALTER TABLE .`commits`
+ALTER TABLE `commits`
 ADD INDEX `branch_fk_idx` (`branch_id` ASC) VISIBLE;
 ALTER TABLE `commits`
 ADD CONSTRAINT `branch_fk`
