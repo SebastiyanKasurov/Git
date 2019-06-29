@@ -1,4 +1,4 @@
-CREATE TABLE `git`.`files` (
+CREATE TABLE `files` (
   `id` BIGINT(20) NOT NULL,
   `name` VARCHAR(50) NOT NULL,
   `branch_id` BIGINT(20) NOT NULL,
@@ -9,11 +9,11 @@ CREATE TABLE `git`.`files` (
   INDEX `repo_fk_idx` (`repository_id` ASC) VISIBLE,
   CONSTRAINT `branch__fk`
     FOREIGN KEY (`branch_id`)
-    REFERENCES `git`.`branches` (`id`)
+    REFERENCES `branches` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `repo_fk`
     FOREIGN KEY (`repository_id`)
-    REFERENCES `git`.`repositories` (`id`)
+    REFERENCES `repositories` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT);
