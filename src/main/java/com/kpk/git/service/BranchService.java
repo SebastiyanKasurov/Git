@@ -39,12 +39,12 @@ public class BranchService {
 		return null;
 	}
 	
-	public Result add(String... files) {
+	public Result add(List<String> files) {
 		
 		return null;
 	}
 	
-	public Result remove(String... files) {
+	public Result remove(List<String> files) {
 		
 		return null;
 	}

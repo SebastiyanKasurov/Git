@@ -9,6 +9,10 @@ import com.kpk.git.util.exceptions.NonExistingCommit;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class BranchServiceTest extends AbstractTest {
 	
 	private static final String ADDED_2_FILES = "Added 2 files";
@@ -21,33 +25,33 @@ public class BranchServiceTest extends AbstractTest {
 	
 	@Test
 	public void testAddFilesSuccess() {
-		Result result = branchService.add(TEST_FILE_1);
+		Result result = branchService.add(getListWithFiles(TEST_FILE_1));
 		A.assertTrue(result.isSuccess());
 	}
 	
 	@Test(expected = ExistingFileException.class)
 	public void testAddExistingFileThrowsException() {
-		branchService.add(TEST_FILE_1);
-		Result result1 = branchService.add(TEST_FILE_1);
+		branchService.add(getListWithFiles(TEST_FILE_1));
+		branchService.add(getListWithFiles(TEST_FILE_1));
 	}
 	
 	@Test
 	public void testRemoveFileSuccess() {
-		branchService.add(TEST_FILE_1);
-		Result result = branchService.remove(TEST_FILE_1);
+		branchService.add(getListWithFiles(TEST_FILE_1));
+		Result result = branchService.remove(getListWithFiles(TEST_FILE_1));
 		
 		A.assertTrue(result.isSuccess());
 	}
 	
 	@Test(expected = NonExistentFileException.class)
 	public void testRemoveNonExistingFile() {
-		branchService.add(TEST_FILE_1);
-		branchService.remove(TEST_FILE_2);
+		branchService.add(getListWithFiles(TEST_FILE_1));
+		branchService.remove(getListWithFiles(TEST_FILE_2));
 	}
 	
 	@Test
 	public void testCommitSuccess() {
-		branchService.add(TEST_FILE_1);
+		branchService.add(getListWithFiles(TEST_FILE_1));
 		
 		Result result = branchService.commit("test commit");
 		A.assertTrue(result.isSuccess());
@@ -63,7 +67,7 @@ public class BranchServiceTest extends AbstractTest {
 	
 	@Test
 	public void testGetCommitHeadWithOneCommit() {
-		branchService.add(TEST_FILE_1, TEST_FILE_2);
+		branchService.add(getListWithFiles(TEST_FILE_1, TEST_FILE_2));
 		branchService.commit(ADDED_2_FILES);
 		
 		Commit result = branchService.getHead();
@@ -72,7 +76,7 @@ public class BranchServiceTest extends AbstractTest {
 	
 	@Test(expected = NonExistingCommit.class)
 	public void testCheckoutCommitNotExistingHash() {
-		branchService.add(TEST_FILE_1, TEST_FILE_2);
+		branchService.add(getListWithFiles(TEST_FILE_1, TEST_FILE_2));
 		branchService.commit(ADDED_2_FILES);
 		
 		branchService.checkoutCommit(null);
@@ -80,7 +84,7 @@ public class BranchServiceTest extends AbstractTest {
 	
 	@Test(expected = NonExistingCommit.class)
 	public void testCheckoutCommit() {
-		branchService.add(TEST_FILE_1, TEST_FILE_2);
+		branchService.add(getListWithFiles(TEST_FILE_1, TEST_FILE_2));
 		branchService.commit(ADDED_2_FILES);
 		Commit commit = branchService.getHead();
 		
@@ -88,5 +92,10 @@ public class BranchServiceTest extends AbstractTest {
 		
 		A.assertTrue(result.isSuccess());
 		A.assertEquals("moving head messages must be equal", NOW_AT + commit.getHash(), commit.getHash());
+	}
+	
+	private List<String> getListWithFiles(String... filesArray)
+	{
+		return Arrays.asList(filesArray);
 	}
 }
