@@ -3,6 +3,8 @@ package com.kpk.git.service;
 import com.kpk.git.dao.BranchDao;
 import com.kpk.git.model.Commit;
 import com.kpk.git.model.Result;
+import com.kpk.git.util.exceptions.ExistingFileException;
+import com.kpk.git.util.exceptions.NonExistentFileException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,17 +43,35 @@ public class BranchService {
 	}
 	
 	public Result commit(String message, String repositoryName) {
+		boolean isEmptyStage = branchDao.getStagedFiles(repositoryName).size() == 0;
+		if (isEmptyStage) {
+			return new Result("nothing to commit, working tree clean", false);
+		}
 		
-		return null;
+		int rowsAffected = branchDao.commit(message, repositoryName);
+		return new Result("" + rowsAffected + " files changed", true);
 	}
 	
 	public Result addFiles(List<String> files, String repositoryName) {
-		return null;
+		for (String file : files) {
+			if (branchDao.checkFileExists(file, repositoryName)) {
+				throw new ExistingFileException("'" + file + "' already exists");
+			}
+		}
+		branchDao.add(files, repositoryName);
+		
+		return new Result(files.size() + " files prepared to commit", true);
 	}
 	
 	public Result removeFiles(List<String> files, String repositoryName) {
+		for (String file : files) {
+			if (!branchDao.checkFileExists(file, repositoryName)) {
+				throw new NonExistentFileException("'" + file + "' did not match any files");
+			}
+		}
 		
-		return null;
+		branchDao.remove(files, repositoryName);
+		return new Result("added " + files.size() + " files for removal", true);
 	}
 	
 }
