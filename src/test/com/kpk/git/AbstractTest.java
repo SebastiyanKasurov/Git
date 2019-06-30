@@ -1,6 +1,5 @@
 package com.kpk.git;
 
-import com.kpk.git.dao.RepositoryDao;
 import com.kpk.git.service.RepositoryService;
 import org.junit.After;
 import org.junit.Assert;
@@ -17,7 +16,7 @@ import java.util.Map;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @ActiveProfiles("test")
-public class AbstractTest {
+public abstract class AbstractTest {
 	
 	protected static final String REPOSITORY_NAME = "test";
 	protected Assert A;
