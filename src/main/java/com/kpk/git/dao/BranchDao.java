@@ -46,6 +46,18 @@ public class BranchDao {
 		jdbcTemplate.update(sql, params);
 	}
 	
+	public Commit getCommitsHead(String repositoryName) {
+		final Long branchId = repositoryDao.getCurrentBranchId(repositoryName);
+		
+		final String sql = "SELECT * FROM commits WHERE branch_id=:branchId " +
+				" ORDER BY creation_date DESC LIMIT 1";
+		
+		final Map<String, Object> params = new HashMap<>();
+		params.put("branchId", branchId);
+		
+		return jdbcTemplate.queryForObject(sql, params, new CommitRowMapper());
+	}
+	
 	public int commit(String message, String repositoryName) {
 		final Long branchId = repositoryDao.getCurrentBranchId(repositoryName);
 		final Long repositoryId = repositoryDao.getRepositoryId(repositoryName);
@@ -124,7 +136,7 @@ public class BranchDao {
 			params.put("name", file);
 			jdbcTemplate.update(sql, params);
 		}
-
+		
 	}
 	
 	public void remove(List<String> files, String repositoryName) {

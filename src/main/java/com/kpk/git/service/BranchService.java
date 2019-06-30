@@ -4,8 +4,10 @@ import com.kpk.git.dao.BranchDao;
 import com.kpk.git.model.Commit;
 import com.kpk.git.model.Result;
 import com.kpk.git.util.exceptions.ExistingFileException;
+import com.kpk.git.util.exceptions.NoCommitsMadeException;
 import com.kpk.git.util.exceptions.NonExistentFileException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +18,12 @@ public class BranchService {
 	@Autowired
 	private BranchDao branchDao;
 	
-	public Commit getHead() {
-		return null;
+	public Commit getHead(String repositoryName) {
+		try {
+			return branchDao.getCommitsHead(repositoryName);
+		} catch (EmptyResultDataAccessException e) {
+			throw new NoCommitsMadeException("no commits made yet.");
+		}
 	}
 	
 	private Result changeCommitHeadTo(String hash) {
