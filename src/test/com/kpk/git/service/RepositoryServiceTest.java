@@ -16,37 +16,36 @@ public class RepositoryServiceTest extends AbstractTest {
 	
 	@Test
 	public void testCreateBranch() {
-		List<String> branches = repositoryService.getBranches();
+		List<String> branches = repositoryService.getBranches(REPOSITORY_NAME);
 		A.assertEquals("default branches size must be 1, only master", 1, branches.size());
 		
-		Result result = repositoryService.createBranch(TEST_BRANCH);
+		Result result = repositoryService.createBranch(TEST_BRANCH, REPOSITORY_NAME);
 		A.assertTrue(result.isSuccess());
 		
-		List<String> actual = repositoryService.getBranches();
+		List<String> actual = repositoryService.getBranches(REPOSITORY_NAME);
 		A.assertEquals("size must be equal to 2 after creating new one", 2, actual.size());
 	}
 	
 	@Test(expected = ExistingBranchException.class)
 	public void testCreateBranchWithExistingName() {
-		Result result = repositoryService.createBranch(TEST_BRANCH);
+		Result result = repositoryService.createBranch(TEST_BRANCH, REPOSITORY_NAME);
 		A.assertTrue(result.isSuccess());
 		
-		repositoryService.createBranch(TEST_BRANCH);
+		repositoryService.createBranch(TEST_BRANCH, REPOSITORY_NAME);
 	}
 	
 	@Test
 	public void testCheckoutBranch() {
-		Result result = repositoryService.createBranch(TEST_BRANCH);
-		A.assertTrue(result.isSuccess());
+		repositoryService.createBranch(TEST_BRANCH, REPOSITORY_NAME);
 		
-		Result result1 = repositoryService.checkoutBranch(TEST_BRANCH);
-		A.assertTrue(result1.isSuccess());
+		Result result = repositoryService.checkoutBranch(TEST_BRANCH, REPOSITORY_NAME);
+		A.assertTrue(result.isSuccess());
 		A.assertEquals("switched to branch " + TEST_BRANCH, result.getMessage());
 	}
 	
 	@Test
 	public void testCheckoutBranchNotExistingBranch() {
-		Result result = repositoryService.checkoutBranch(TEST_BRANCH);
+		Result result = repositoryService.checkoutBranch(TEST_BRANCH, REPOSITORY_NAME);
 		
 		A.assertFalse(result.isSuccess());
 		A.assertEquals("branch " + TEST_BRANCH + " does not exist", result.getMessage());
