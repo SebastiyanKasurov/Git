@@ -24,6 +24,22 @@ public class BranchServiceTest extends AbstractTest {
 	private BranchService branchService;
 	
 	@Test
+	public void testGetStagetFiles() {
+		Result result = branchService.addFiles(getListWithFiles(TEST_FILE_1, TEST_FILE_2), REPOSITORY_NAME);
+		
+		A.assertTrue(result.isSuccess());
+		A.assertEquals(2, branchService.getStagedFiles(REPOSITORY_NAME).size());
+	}
+	
+	@Test
+	public void testGetCommitedFiles() {
+		branchService.addFiles(getListWithFiles(TEST_FILE_1, TEST_FILE_2), REPOSITORY_NAME);
+		branchService.commit("Added 2 files", REPOSITORY_NAME);
+		
+		A.assertEquals(2, branchService.getCommitedFiles(REPOSITORY_NAME).size());
+	}
+	
+	@Test
 	public void testAddFilesSuccess() {
 		Result result = branchService.addFiles(getListWithFiles(TEST_FILE_1), REPOSITORY_NAME);
 		A.assertTrue(result.isSuccess());
@@ -55,6 +71,7 @@ public class BranchServiceTest extends AbstractTest {
 		
 		Result result = branchService.commit("test commit", REPOSITORY_NAME);
 		A.assertTrue(result.isSuccess());
+		A.assertEquals(1, branchService.getCommitedFiles(REPOSITORY_NAME).size());
 	}
 	
 	@Test
