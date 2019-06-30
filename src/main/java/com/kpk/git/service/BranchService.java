@@ -34,17 +34,17 @@ public class BranchService {
 		return null;
 	}
 	
-	public Result commit(String message) {
+	public Result commit(String message, String repositoryName) {
 		
 		return null;
 	}
 	
-	public Result add(List<String> files) {
+	public Result add(List<String> files, String repositoryName) {
 		
 		return null;
 	}
 	
-	public Result remove(List<String> files) {
+	public Result remove(List<String> files, String repositoryName) {
 		
 		return null;
 	}
