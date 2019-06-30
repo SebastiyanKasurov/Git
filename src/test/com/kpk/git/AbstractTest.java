@@ -1,6 +1,7 @@
 package com.kpk.git;
 
 import com.kpk.git.dao.RepositoryDao;
+import com.kpk.git.service.RepositoryService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,7 +26,7 @@ public class AbstractTest {
 	protected NamedParameterJdbcTemplate jdbcTemplate;
 	
 	@Autowired
-	protected RepositoryDao repositoryDao;
+	protected RepositoryService repositoryDao;
 	
 	@Before
 	public void setUp() {

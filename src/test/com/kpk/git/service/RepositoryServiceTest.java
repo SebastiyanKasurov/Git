@@ -15,6 +15,14 @@ public class RepositoryServiceTest extends AbstractTest {
 	private RepositoryService repositoryService;
 	
 	@Test
+	public void testCreateRepositoryWithExistingName() {
+		Result result = repositoryService.createRepository(REPOSITORY_NAME);
+		
+		A.assertFalse(result.isSuccess());
+		A.assertEquals("repository with name : " + REPOSITORY_NAME + " already exist", result.getMessage());
+	}
+	
+	@Test
 	public void testCreateBranch() {
 		List<String> branches = repositoryService.getBranches(REPOSITORY_NAME);
 		A.assertEquals("default branches size must be 1, only master", 1, branches.size());
