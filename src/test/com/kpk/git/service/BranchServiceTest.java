@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class BranchServiceTest extends AbstractTest {
@@ -20,46 +19,47 @@ public class BranchServiceTest extends AbstractTest {
 	private static final String WORKING_TREE_CLEAN = "nothing to commit, working tree clean";
 	private static final String TEST_FILE_1 = "test1.txt";
 	private static final String TEST_FILE_2 = "test2.txt";
+	
 	@Autowired
 	private BranchService branchService;
 	
 	@Test
 	public void testAddFilesSuccess() {
-		Result result = branchService.add(getListWithFiles(TEST_FILE_1));
+		Result result = branchService.addFiles(getListWithFiles(TEST_FILE_1), REPOSITORY_NAME);
 		A.assertTrue(result.isSuccess());
 	}
 	
 	@Test(expected = ExistingFileException.class)
 	public void testAddExistingFileThrowsException() {
-		branchService.add(getListWithFiles(TEST_FILE_1));
-		branchService.add(getListWithFiles(TEST_FILE_1));
+		branchService.addFiles(getListWithFiles(TEST_FILE_1), REPOSITORY_NAME);
+		branchService.addFiles(getListWithFiles(TEST_FILE_1), REPOSITORY_NAME);
 	}
 	
 	@Test
 	public void testRemoveFileSuccess() {
-		branchService.add(getListWithFiles(TEST_FILE_1));
-		Result result = branchService.remove(getListWithFiles(TEST_FILE_1));
+		branchService.addFiles(getListWithFiles(TEST_FILE_1), REPOSITORY_NAME);
+		Result result = branchService.removeFiles(getListWithFiles(TEST_FILE_1), REPOSITORY_NAME);
 		
 		A.assertTrue(result.isSuccess());
 	}
 	
 	@Test(expected = NonExistentFileException.class)
 	public void testRemoveNonExistingFile() {
-		branchService.add(getListWithFiles(TEST_FILE_1));
-		branchService.remove(getListWithFiles(TEST_FILE_2));
+		branchService.addFiles(getListWithFiles(TEST_FILE_1), REPOSITORY_NAME);
+		branchService.removeFiles(getListWithFiles(TEST_FILE_2), REPOSITORY_NAME);
 	}
 	
 	@Test
 	public void testCommitSuccess() {
-		branchService.add(getListWithFiles(TEST_FILE_1));
+		branchService.addFiles(getListWithFiles(TEST_FILE_1), REPOSITORY_NAME);
 		
-		Result result = branchService.commit("test commit");
+		Result result = branchService.commit("test commit", REPOSITORY_NAME);
 		A.assertTrue(result.isSuccess());
 	}
 	
 	@Test
 	public void testCommitWithEmptyStage() {
-		Result result = branchService.commit("test commit");
+		Result result = branchService.commit("test commit", REPOSITORY_NAME);
 		
 		A.assertFalse(result.isSuccess());
 		A.assertEquals("commit message must be equal", WORKING_TREE_CLEAN, result.getMessage());
@@ -67,8 +67,8 @@ public class BranchServiceTest extends AbstractTest {
 	
 	@Test
 	public void testGetCommitHeadWithOneCommit() {
-		branchService.add(getListWithFiles(TEST_FILE_1, TEST_FILE_2));
-		branchService.commit(ADDED_2_FILES);
+		branchService.addFiles(getListWithFiles(TEST_FILE_1, TEST_FILE_2), REPOSITORY_NAME);
+		branchService.commit(ADDED_2_FILES, REPOSITORY_NAME);
 		
 		Commit result = branchService.getHead();
 		A.assertEquals("commit message must be equal", ADDED_2_FILES, result.getMessage());
@@ -76,16 +76,16 @@ public class BranchServiceTest extends AbstractTest {
 	
 	@Test(expected = NonExistingCommit.class)
 	public void testCheckoutCommitNotExistingHash() {
-		branchService.add(getListWithFiles(TEST_FILE_1, TEST_FILE_2));
-		branchService.commit(ADDED_2_FILES);
+		branchService.addFiles(getListWithFiles(TEST_FILE_1, TEST_FILE_2), REPOSITORY_NAME);
+		branchService.commit(ADDED_2_FILES, REPOSITORY_NAME);
 		
 		branchService.checkoutCommit(null);
 	}
 	
 	@Test(expected = NonExistingCommit.class)
 	public void testCheckoutCommit() {
-		branchService.add(getListWithFiles(TEST_FILE_1, TEST_FILE_2));
-		branchService.commit(ADDED_2_FILES);
+		branchService.addFiles(getListWithFiles(TEST_FILE_1, TEST_FILE_2), REPOSITORY_NAME);
+		branchService.commit(ADDED_2_FILES, REPOSITORY_NAME);
 		Commit commit = branchService.getHead();
 		
 		Result result = branchService.checkoutCommit(commit.getHash());
@@ -94,8 +94,7 @@ public class BranchServiceTest extends AbstractTest {
 		A.assertEquals("moving head messages must be equal", NOW_AT + commit.getHash(), commit.getHash());
 	}
 	
-	private List<String> getListWithFiles(String... filesArray)
-	{
+	private List<String> getListWithFiles(String... filesArray) {
 		return Arrays.asList(filesArray);
 	}
 }

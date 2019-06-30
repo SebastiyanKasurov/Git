@@ -1,7 +1,9 @@
 package com.kpk.git;
 
+import com.kpk.git.dao.RepositoryDao;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,10 +18,19 @@ import java.util.Map;
 @ActiveProfiles("test")
 public class AbstractTest {
 	
+	protected static final String REPOSITORY_NAME = "test";
 	protected Assert A;
 	
 	@Autowired
 	protected NamedParameterJdbcTemplate jdbcTemplate;
+	
+	@Autowired
+	protected RepositoryDao repositoryDao;
+	
+	@Before
+	public void setUp() {
+		repositoryDao.createRepository(REPOSITORY_NAME);
+	}
 	
 	@After
 	public void cleanUp() {

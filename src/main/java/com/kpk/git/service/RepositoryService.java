@@ -9,6 +9,10 @@ import java.util.List;
 @Service
 public class RepositoryService {
 	
+	public void createRepository(String name) {
+	
+	}
+	
 	public Result add(List<String> files) {
 		return null;
 	}
@@ -17,7 +21,7 @@ public class RepositoryService {
 		return null;
 	}
 	
-	public Result remove(List<String>  files) {
+	public Result remove(List<String> files) {
 		return null;
 	}
 	

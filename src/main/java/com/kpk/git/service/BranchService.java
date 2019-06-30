@@ -1,13 +1,18 @@
 package com.kpk.git.service;
 
+import com.kpk.git.dao.BranchDao;
 import com.kpk.git.model.Commit;
 import com.kpk.git.model.Result;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class BranchService {
+	
+	@Autowired
+	private BranchDao branchDao;
 	
 	public Commit getHead() {
 		return null;
@@ -26,12 +31,13 @@ public class BranchService {
 		return null;
 	}
 	
-	public List<String> getStagedFiles() {
-		return null;
+	public List<String> getStagedFiles(String repositoryName) {
+		return branchDao.getStagedFiles(repositoryName);
 	}
 	
-	public List<String> getCommitedFiles() {
-		return null;
+	public List<String> getCommitedFiles(String repositoryName) {
+		
+		return branchDao.getCommitedFiles(repositoryName);
 	}
 	
 	public Result commit(String message, String repositoryName) {
@@ -39,12 +45,11 @@ public class BranchService {
 		return null;
 	}
 	
-	public Result add(List<String> files, String repositoryName) {
-		
+	public Result addFiles(List<String> files, String repositoryName) {
 		return null;
 	}
 	
-	public Result remove(List<String> files, String repositoryName) {
+	public Result removeFiles(List<String> files, String repositoryName) {
 		
 		return null;
 	}
