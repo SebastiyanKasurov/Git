@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import javax.sql.DataSource;
 
 @Configuration
-public class DatabaseConfiguration {
+public class DatabaseConfig {
 	
 	@Bean
 	public NamedParameterJdbcTemplate getJdbcTemplate(DataSource dataSource) {
