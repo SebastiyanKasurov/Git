@@ -1,6 +1,10 @@
 package com.kpk.git.model;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Commit {
 	private String message;
@@ -24,10 +28,31 @@ public class Commit {
 	}
 	
 	public String getHash() {
-		return hash;
+		return hexDigest(this.getTimeCreatedAfterFormat() + message);
 	}
 	
-	public void setHash(String hash) {
-		this.hash = hash;
+	public String getTimeCreatedAfterFormat() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E LLL dd kk:mm yyyy");
+		return formatter.format(timeCreated);
+	}
+	
+	private String hexDigest(String input) {
+		MessageDigest digest = null;
+		try {
+			digest = MessageDigest.getInstance("SHA-1");
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("No such algorithm.", e);
+		}
+		byte[] bytes = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+		return convertBytesToHex(bytes);
+	}
+	
+	private String convertBytesToHex(byte[] bytes) {
+		StringBuilder hex = new StringBuilder();
+		for (byte current : bytes) {
+			hex.append(String.format("%02x", current));
+		}
+		
+		return hex.toString();
 	}
 }
