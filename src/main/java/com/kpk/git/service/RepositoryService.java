@@ -4,6 +4,8 @@ import com.kpk.git.model.Commit;
 import com.kpk.git.model.Result;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RepositoryService {
 	
@@ -31,6 +33,9 @@ public class RepositoryService {
 		return null;
 	}
 	
+	public List<String> getBranches() {
+		return null;
+	}
 	public Result checkoutBranch(String name) {
 		return null;
 	}
