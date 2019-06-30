@@ -6,6 +6,7 @@ import com.kpk.git.model.Result;
 import com.kpk.git.util.exceptions.ExistingFileException;
 import com.kpk.git.util.exceptions.NoCommitsMadeException;
 import com.kpk.git.util.exceptions.NonExistentFileException;
+import com.kpk.git.util.exceptions.NonExistingCommit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -26,12 +27,21 @@ public class BranchService {
 		}
 	}
 	
-	private Result changeCommitHeadTo(String hash) {
-		return null;
+	private Result changeCommitHeadTo(String hash, String repositoryName) {
+		branchDao.setNewHead(repositoryName, hash);
+		
+		return new Result("HEAD is now at "+ hash,true);
 	}
 	
-	public Result checkoutCommit(String hash) {
-		return null;
+	public Result checkoutCommit(String hash, String repositoryName) {
+		boolean commitExists = branchDao.getCommits(repositoryName)
+				.stream()
+				.anyMatch(c -> c.getHash().equals(hash));
+		
+		if (!commitExists) {
+			throw new NonExistingCommit("commit with hash: " + hash + " does not exist");
+		}
+		return changeCommitHeadTo(hash, repositoryName);
 	}
 	
 	public Result log() {

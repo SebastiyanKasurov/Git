@@ -25,7 +25,7 @@ public class BranchServiceTest extends AbstractTest {
 	private BranchService branchService;
 	
 	@Test
-	public void testGetStagetFiles() {
+	public void testGetStagedFiles() {
 		Result result = branchService.addFiles(getListWithFiles(TEST_FILE_1, TEST_FILE_2), REPOSITORY_NAME);
 		
 		A.assertTrue(result.isSuccess());
@@ -104,19 +104,19 @@ public class BranchServiceTest extends AbstractTest {
 		branchService.addFiles(getListWithFiles(TEST_FILE_1, TEST_FILE_2), REPOSITORY_NAME);
 		branchService.commit(ADDED_2_FILES, REPOSITORY_NAME);
 		
-		branchService.checkoutCommit(null);
+		branchService.checkoutCommit(null, REPOSITORY_NAME);
 	}
 	
-	@Test(expected = NonExistingCommit.class)
+	@Test
 	public void testCheckoutCommit() {
 		branchService.addFiles(getListWithFiles(TEST_FILE_1, TEST_FILE_2), REPOSITORY_NAME);
 		branchService.commit(ADDED_2_FILES, REPOSITORY_NAME);
 		Commit commit = branchService.getHead(REPOSITORY_NAME);
 		
-		Result result = branchService.checkoutCommit(commit.getHash());
+		Result result = branchService.checkoutCommit(commit.getHash(), REPOSITORY_NAME);
 		
 		A.assertTrue(result.isSuccess());
-		A.assertEquals("moving head messages must be equal", NOW_AT + commit.getHash(), commit.getHash());
+		A.assertEquals("moving head messages must be equal", NOW_AT + commit.getHash(), result.getMessage());
 	}
 	
 	private List<String> getListWithFiles(String... filesArray) {

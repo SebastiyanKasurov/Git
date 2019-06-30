@@ -60,7 +60,7 @@ public class BranchDao {
 		final Long branchId = repositoryDao.getCurrentBranchId(repositoryName);
 		
 		final String sql = "SELECT * FROM commits WHERE branch_id=:branchId " +
-				" ORDER BY creation_date DESC LIMIT 1";
+				" AND is_head = 1";
 		
 		final Map<String, Object> params = new HashMap<>();
 		params.put("branchId", branchId);
@@ -76,6 +76,7 @@ public class BranchDao {
 		commit.setMessage(message);
 		commit.setTimeCreated(LocalDateTime.now());
 		
+		removeOldHead(branchId);
 		addCommit(commit, branchId);
 		
 		final Map<String, Object> params = new HashMap<>();
@@ -93,9 +94,32 @@ public class BranchDao {
 		return rowsAffected + jdbcTemplate.update(deleteRemove, params);
 	}
 	
+	private void removeOldHead(Long branchId) {
+		final String sql = "UPDATE commits SET is_head = 0 WHERE branch_id =:branchId";
+		
+		final Map<String, Object> params = new HashMap<>();
+		params.put("branchId", branchId);
+		
+		jdbcTemplate.update(sql, params);
+	}
+	
+	public void setNewHead(String repositoryName, String newHeadHash) {
+		final Long branchId = repositoryDao.getCurrentBranchId(repositoryName);
+		
+		removeOldHead(branchId);
+		
+		final String sql = "UPDATE commits SET is_head = 1  WHERE branch_id =:branchId AND id=:hash";
+		
+		final Map<String, Object> params = new HashMap<>();
+		params.put("branchId", branchId);
+		params.put("hash", newHeadHash);
+		
+		jdbcTemplate.update(sql, params);
+	}
+	
 	private Long addCommit(Commit commit, Long branchId) {
-		final String sql = "INSERT INTO commits (id, branch_id, message, creation_date) " +
-				"VALUES (:id, :branchId, :message, :creationDate)";
+		final String sql = "INSERT INTO commits (id, branch_id, message, creation_date,is_head) " +
+				"VALUES (:id, :branchId, :message, :creationDate, 1)";
 		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		
