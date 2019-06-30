@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -36,6 +37,27 @@ public class RepositoryDao {
 		branchDao.updateBranchRepositoryId(createdBranchId, repositoryId);
 	}
 	
+	public void createBranch(String repositoryName, String branchName) {
+		final int repositoryId = getRepositoryId(repositoryName).intValue();
+		
+		final int createdBranchId = branchDao.createBranch(branchName);
+		
+		branchDao.updateBranchRepositoryId(createdBranchId, repositoryId);
+	}
+	
+	public void updateCurrentBranch(String repositoryName, String branchName) {
+		final int repositoryId = getRepositoryId(repositoryName).intValue();
+		final int branchId = getBranchId(branchName).intValue();
+		
+		final String sql = "UPDATE repositories SET current_branch_id =:branchId WHERE id = :repoId";
+		
+		final Map<String, Object> params = new HashMap<>();
+		params.put("branchId", branchId);
+		params.put("repoId", repositoryId);
+		
+		jdbcTemplate.update(sql, params);
+	}
+	
 	public Long getCurrentBranchId(String repositoryName) {
 		final String sql = "SELECT current_branch_id FROM repositories WHERE name = :name";
 		
@@ -50,6 +72,26 @@ public class RepositoryDao {
 		
 		final Map<String, Object> params = new HashMap<>();
 		params.put("name", repositoryName);
+		
+		return jdbcTemplate.queryForObject(sql, params, Long.class);
+	}
+	
+	public List<String> getBranches(String repositoryName) {
+		final Long repositoryId = getRepositoryId(repositoryName);
+		
+		final String sql = "SELECT name FROM branches WHERE repository_id = :repoId";
+		
+		final Map<String, Object> params = new HashMap<>();
+		params.put("repoId", repositoryId);
+		
+		return jdbcTemplate.queryForList(sql, params, String.class);
+	}
+	
+	private Long getBranchId(String branchName) {
+		final String sql = "SELECT id FROM branches WHERE name = :name";
+		
+		final Map<String, Object> params = new HashMap<>();
+		params.put("name", branchName);
 		
 		return jdbcTemplate.queryForObject(sql, params, Long.class);
 	}
