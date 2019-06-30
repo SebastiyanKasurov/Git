@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -30,7 +31,7 @@ public class BranchService {
 	private Result changeCommitHeadTo(String hash, String repositoryName) {
 		branchDao.setNewHead(repositoryName, hash);
 		
-		return new Result("HEAD is now at "+ hash,true);
+		return new Result("HEAD is now at " + hash, true);
 	}
 	
 	public Result checkoutCommit(String hash, String repositoryName) {
@@ -44,9 +45,26 @@ public class BranchService {
 		return changeCommitHeadTo(hash, repositoryName);
 	}
 	
-	public Result log() {
+	public Result log(String repositoryName) {
 		
-		return null;
+		List<Commit> commits = branchDao.getCommits(repositoryName);
+		Collections.reverse(commits);
+		
+		StringBuilder builder = new StringBuilder();
+		for (Commit commit : commits) {
+			
+			builder.append("commit ");
+			builder.append(commit.getHash());
+			builder.append("\nDate: ");
+			builder.append(commit.getTimeCreatedAfterFormat());
+			builder.append("\n\n\t");
+			builder.append(commit.getMessage());
+
+			builder.append("\n\n");
+		}
+		
+		String result = new String(builder);
+		return new Result(result, true);
 	}
 	
 	public List<String> getStagedFiles(String repositoryName) {

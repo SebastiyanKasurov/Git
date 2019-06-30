@@ -25,12 +25,11 @@ public abstract class AbstractTest {
 	protected NamedParameterJdbcTemplate jdbcTemplate;
 	
 	@Autowired
-	protected RepositoryService repositoryDao;
+	protected RepositoryService repositoryService;
 	
 	@Before
 	public void setUp() {
-		cleanUp();
-		repositoryDao.createRepository(REPOSITORY_NAME);
+		repositoryService.createRepository(REPOSITORY_NAME);
 	}
 	
 	@After

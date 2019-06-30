@@ -31,7 +31,7 @@ public class Commit {
 		return hexDigest(this.getTimeCreatedAfterFormat() + message);
 	}
 	
-	private String getTimeCreatedAfterFormat() {
+	public String getTimeCreatedAfterFormat() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E LLL dd kk:mm yyyy");
 		return formatter.format(timeCreated);
 	}

@@ -1,6 +1,8 @@
 package com.kpk.git.dao;
 
+import com.kpk.git.util.exceptions.AbstractClientException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -81,7 +83,11 @@ public class RepositoryDao {
 		final Map<String, Object> params = new HashMap<>();
 		params.put("name", repositoryName);
 		
-		return jdbcTemplate.queryForObject(sql, params, Long.class);
+		try {
+			return jdbcTemplate.queryForObject(sql, params, Long.class);
+		} catch (EmptyResultDataAccessException e) {
+			throw new AbstractClientException("No such repository with name: "+ repositoryName);
+		}
 	}
 	
 	public List<String> getBranches(String repositoryName) {

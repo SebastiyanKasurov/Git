@@ -11,9 +11,6 @@ import java.util.List;
 public class RepositoryServiceTest extends AbstractTest {
 	private static final String TEST_BRANCH = "test-branch";
 	
-	@Autowired
-	private RepositoryService repositoryService;
-	
 	@Test
 	public void testCreateRepositoryWithExistingName() {
 		Result result = repositoryService.createRepository(REPOSITORY_NAME);
