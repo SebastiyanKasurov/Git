@@ -4,6 +4,7 @@ import com.kpk.git.AbstractTest;
 import com.kpk.git.model.Commit;
 import com.kpk.git.model.Result;
 import com.kpk.git.util.exceptions.ExistingFileException;
+import com.kpk.git.util.exceptions.NoCommitsMadeException;
 import com.kpk.git.util.exceptions.NonExistentFileException;
 import com.kpk.git.util.exceptions.NonExistingCommit;
 import org.junit.Test;
@@ -87,8 +88,15 @@ public class BranchServiceTest extends AbstractTest {
 		branchService.addFiles(getListWithFiles(TEST_FILE_1, TEST_FILE_2), REPOSITORY_NAME);
 		branchService.commit(ADDED_2_FILES, REPOSITORY_NAME);
 		
-		Commit result = branchService.getHead();
+		Commit result = branchService.getHead(REPOSITORY_NAME);
 		A.assertEquals("commit message must be equal", ADDED_2_FILES, result.getMessage());
+	}
+	
+	@Test(expected = NoCommitsMadeException.class)
+	public void testGetHeadWithNoCommitsMade() {
+		
+		branchService.getHead(REPOSITORY_NAME);
+		
 	}
 	
 	@Test(expected = NonExistingCommit.class)
@@ -103,7 +111,7 @@ public class BranchServiceTest extends AbstractTest {
 	public void testCheckoutCommit() {
 		branchService.addFiles(getListWithFiles(TEST_FILE_1, TEST_FILE_2), REPOSITORY_NAME);
 		branchService.commit(ADDED_2_FILES, REPOSITORY_NAME);
-		Commit commit = branchService.getHead();
+		Commit commit = branchService.getHead(REPOSITORY_NAME);
 		
 		Result result = branchService.checkoutCommit(commit.getHash());
 		
