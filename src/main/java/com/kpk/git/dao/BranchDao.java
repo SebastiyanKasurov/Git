@@ -46,6 +46,16 @@ public class BranchDao {
 		jdbcTemplate.update(sql, params);
 	}
 	
+	public List<Commit> getCommits(String repositoryName) {
+		final Long branchId = repositoryDao.getCurrentBranchId(repositoryName);
+		final String sql = "SELECT * FROM commits WHERE branch_id=:branchId";
+		
+		final Map<String, Object> params = new HashMap<>();
+		params.put("branchId", branchId);
+		
+		return jdbcTemplate.query(sql, params, new CommitRowMapper());
+	}
+	
 	public Commit getCommitsHead(String repositoryName) {
 		final Long branchId = repositoryDao.getCurrentBranchId(repositoryName);
 		

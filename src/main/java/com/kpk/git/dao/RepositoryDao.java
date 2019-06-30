@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,13 @@ public class RepositoryDao {
 		
 		int repositoryId = keyHolder.getKey().intValue();
 		branchDao.updateBranchRepositoryId(createdBranchId, repositoryId);
+	}
+	
+	public List<String> getRepositories() {
+		
+		final String sql = "SELECT name FROM repositories";
+		
+		return jdbcTemplate.queryForList(sql, Collections.emptyMap(), String.class);
 	}
 	
 	public void createBranch(String repositoryName, String branchName) {
