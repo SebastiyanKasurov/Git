@@ -1,7 +1,6 @@
 package com.kpk.git.service;
 
 import com.kpk.git.dao.RepositoryDao;
-import com.kpk.git.model.Commit;
 import com.kpk.git.model.Result;
 import com.kpk.git.util.exceptions.ExistingBranchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,28 +14,12 @@ public class RepositoryService {
 	@Autowired
 	private RepositoryDao repositoryDao;
 	
-	public void createRepository(String name) {
-	
-	}
-	
-	public Result add(List<String> files) {
-		return null;
-	}
-	
-	public Result commit(String message) {
-		return null;
-	}
-	
-	public Result remove(List<String> files) {
-		return null;
-	}
-	
-	public Commit getHead() {
-		return null;
-	}
-	
-	public Result log() {
-		return null;
+	public Result createRepository(String name) {
+		if (repositoryDao.getRepositories().contains(name)) {
+			return new Result("repository with name : " + name + " already exist", false);
+		}
+		repositoryDao.createRepository(name);
+		return new Result("created repository with name: " + name, true);
 	}
 	
 	public Result createBranch(String branchName, String repositoryName) {
@@ -59,9 +42,5 @@ public class RepositoryService {
 		}
 		
 		return new Result("branch " + branchName + " does not exist", false);
-	}
-	
-	public Result checkoutCommit(String hash) {
-		return null;
 	}
 }
